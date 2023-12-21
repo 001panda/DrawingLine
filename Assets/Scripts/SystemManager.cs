@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class SystemManager : MonoBehaviour
@@ -37,8 +34,9 @@ public class SystemManager : MonoBehaviour
     /// <summary>
     /// 清楚所有的存储
     /// </summary>
-    public void ClaerAll()
-    {
-        PlayerPrefs.DeleteAll();
-    }
+    //public void ClaerAll()
+    //{
+    //    PlayerPrefs.DeleteAll();
+    //}
+    
 }

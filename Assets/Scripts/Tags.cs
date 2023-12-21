@@ -9,4 +9,5 @@ public class Tags
     public static string TARGET = "Target";//目标点
     public static string WALL = "Wall";//墙
     public static string KEY = "Key";//墙
+    public static string OPENDOORKEY = "OpenDoorKey";//最后开门钥匙
 }

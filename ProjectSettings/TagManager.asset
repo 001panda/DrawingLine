@@ -8,6 +8,10 @@ TagManager:
   - Target
   - Wall
   - Key
+  - OpenDoorKey
+  - AudioSource
+  - LineManager
+  - AudioSourceone
   layers:
   - Default
   - TransparentFX

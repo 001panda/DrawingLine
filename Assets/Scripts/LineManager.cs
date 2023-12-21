@@ -7,7 +7,6 @@ public enum PlayerState
 {
     Idle,//待机
     Run,//行走
-    Attack,//攻击
 }
 
 
@@ -28,25 +27,29 @@ public class LineManager : MonoBehaviour
     private Animator animator;
 
     private PlayerState state;
-    
+
     private int currentIndex = 0;
 
     public float timer = 2f;//可自己调节多少秒后出现
 
-    private bool gameOver;
+    public bool gameOver;
     private bool canDraw;
+    public bool Isshow;
+    public AudioSource rootAudioSource;
+    private Coroutine gameoverCoroutine;
+
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         playerPos = GameObject.Find("Player").transform;
 
         animator = GameObject.Find("Player").GetComponent<Animator>();
-        state=PlayerState.Idle;
+        state = PlayerState.Idle;
     }
     private void Update()
     {
         DrawLineStart();
-       
+
         DrawLineEnd();
 
         SetPlayerState();
@@ -71,18 +74,15 @@ public class LineManager : MonoBehaviour
     /// <summary>
     /// 设置人物的动画状态
     /// </summary>
-    private void SetPlayerState()
+    public void SetPlayerState()
     {
-        switch (state) 
+        switch (state)
         {
             case PlayerState.Idle:
                 animator.SetBool(PlayAniStateTag.IsRun, false);
                 break;
             case PlayerState.Run:
                 animator.SetBool(PlayAniStateTag.IsRun, true);
-                break;
-            case PlayerState.Attack:
-                //攻击的逻辑是什么
                 break;
         }
     }
@@ -91,7 +91,7 @@ public class LineManager : MonoBehaviour
     /// </summary>
     private void DrawLineStart()
     {
-        if (Input.GetMouseButton(0)&&!canDraw)
+        if (Input.GetMouseButton(0) && !canDraw)
         {
             Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);//获取屏幕坐标
             if (!pointList.Contains(position))
@@ -108,7 +108,7 @@ public class LineManager : MonoBehaviour
     /// </summary>
     private void DrawLineEnd()
     {
-        if (isRun&&!gameOver)
+        if (isRun && !gameOver)
         {
             playerPos.position = Vector3.MoveTowards(playerPos.position, pointList[currentIndex], speed * Time.deltaTime);
             if (Vector3.Distance(playerPos.position, pointList[currentIndex]) < 0.1f)
@@ -117,7 +117,7 @@ public class LineManager : MonoBehaviour
                 {
                     if (pointList[currentIndex].x > pointList[currentIndex - 1].x)
                     {
-                        playerPos.localEulerAngles = new Vector3(0, 0, 0);//判断任务朝向
+                        playerPos.localEulerAngles = new Vector3(0, 0, 0);//判断人物朝向
                     }
                     else
                     {
@@ -128,31 +128,49 @@ public class LineManager : MonoBehaviour
                 if (currentIndex >= pointList.Count)
                 {
                     currentIndex = pointList.Count - 1;//拿到List的最后一个元素
-                    state = PlayerState.Idle;//到达最后的时候设置为idle状态
+                    state = PlayerState.Idle;
+
                     if (!gameOver)
                     {
-                        StartCoroutine(IsGmaeOver());//开始协程
+                        gameoverCoroutine = StartCoroutine(IsGmaeOver());//开始协程
+
                     }
                     else
                     {
-                        StopCoroutine(IsGmaeOver());//停止线程
+                        StopCoroutine(IsGmaeOver());//停止协程
+
+
                     }
 
                 }
+
+
+
             }
         }
+
     }
+
     /// <summary>
     /// 运用协程
     /// </summary>
-    IEnumerator IsGmaeOver()
+    public IEnumerator IsGmaeOver()
     {
-        yield return new WaitForSeconds(timer);
-        if(!UIManager.Instance.IsGmaeEnd)
+
+        yield return new WaitForSeconds(0.5f);
+        if (!UIManager.Instance.IsGmaeEnd)
         {
+            PlayerCollider.Instance.Mute();
+
+            rootAudioSource = GameObject.FindGameObjectWithTag("AudioSource").GetComponent<AudioSource>();
+            AudioClip audio = Resources.Load<AudioClip>("default");
+            //rootAudioSource.PlayOneShot(audio);
             UIManager.Instance.ShowGameOver();
+
+            //MuteBg.Instance.MuteBGMusic();
             //Debug.Log("是否结束");
             gameOver = true;
+
         }
     }
 

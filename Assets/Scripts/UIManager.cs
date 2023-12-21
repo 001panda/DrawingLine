@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,17 +23,21 @@ public class UIManager : MonoBehaviour
 
     public bool IsGmaeEnd;
 
-
+    private Transform[] coins;
+    public bool GetAllCoins;
 
     private void Awake()
     {
         if (Instance == null)
         {
+            
             Instance = this;
         }
     }
     private void Start()
     {
+        coins = GameObject.FindGameObjectsWithTag("Coin").Select(item => item.transform).ToArray();
+        Debug.Log($"Conins Length = {coins.Length}");
         gameOver = transform.Find("GameOver").gameObject;
         winPanel = transform.Find("WinPanel").gameObject;
 
@@ -57,7 +62,6 @@ public class UIManager : MonoBehaviour
     {
         gameOver.SetActive(true);
     }
-
     /// <summary>
     /// 显示成功的面板
     /// </summary>
@@ -107,10 +111,19 @@ public class UIManager : MonoBehaviour
     {
         total++;
         countText.text=total.ToString();
+        if (total == coins.Length)
+            GetAllCoins = true;
     }
 
     //public void ReturnLogin()
     //{
     //    SceneManager.LoadSceneAsync("LoginScene");
     //}
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        { // 检查是否按下Esc键
+            SceneManager.LoadSceneAsync("MenuScene");
+        }
+    }
 }
