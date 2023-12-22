@@ -8,16 +8,7 @@ public class Door : MonoBehaviour
     private Animator animator;
     private Animator animator1;
     private Animator animator2;
-    //private Vector3 originPos;
-    //private Vector3 tarPos;
-
-    //private void Awake()
-    //{
-    //    originPos = transform.position;
-    //    tarPos = new Vector3(originPos.x - 12f, originPos.y);
-    //    Debug.Log($"tarPos = {tarPos}");
-    //}
-
+  
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -38,12 +29,5 @@ public class Door : MonoBehaviour
         animator2.SetBool("LastDoor", true);
     }
 
-    //private IEnumerator OpenDoorIE()
-    //{
-    //    while (transform.localPosition != tarPos)
-    //    {
-    //        transform.localPosition = Vector3.Lerp(transform.localPosition, tarPos, 0.5f);
-    //        yield return null;
-    //    }
-    //}
+   
 }
